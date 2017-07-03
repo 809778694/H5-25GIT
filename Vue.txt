@@ -1,0 +1,39 @@
+一、使用vue-cli脚手架工具生成项目结构
+	
+	1. 全局安装vue-cli
+		npm install vue-cli -g
+
+	2. 检测是否全局安装成功
+		vue --version 
+		版本号
+
+	3. 使用vue命令，选择对应的模板结构，生成项目结构
+
+		a. vue init simple(模板名称) vue-simple-demo(项目名称)
+
+		b. vue init webpack(模板名称) vue-webpack-demo(项目名称)
+			1. Use ESLint to lint your code? (Y/n)
+
+				ESLint	检测JS的语法结构
+					data (){}
+ 
+			I. 推荐开发大型项目
+			II. 关于ESLint检测语法结构，保证项目中每个人的JS结构保持一致
+
+		c. vue init webpack-simple(模板名称) vue-webpack-simple-demo
+
+	4. 切换到项目的目录，下载依赖包
+		 cd vue-webpack-demo/ && cnpm install
+
+
+webpack-dev-server 
+	webpack提供的本地服务器
+		启动node的程序，搭建了一个express项目
+
+二、在vue-l项目中使用
+	1. 下载 
+		npm install vue-router --save
+
+	下载路由模块 vue-router   
+					cnpm install vue-router --save
+	运行项目 npm run dev

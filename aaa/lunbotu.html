@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>轮播图</title>
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		li{
+			list-style:none;
+		}
+		#lun{
+			width:790px;
+			height:340px;
+			border:1px solid #ccc;
+			margin:0 auto;
+			position:relative;
+			cursor:pointer;
+		}
+		#lun img{
+			display:block;
+		}
+
+		#lun>ul>li{
+			opacity:0;
+			
+			/*
+				默认情况下：
+					所有的li全部设置透明度为0
+					设置过渡效果 opacity 发生改变，在1s钟内完成
+			*/
+			transition:opacity .5s linear;
+			
+			/* 设置元素的定位方式为absolute,保证所有的li元素全部在lun元素内 */
+			position:absolute;
+		}
+		
+		/*
+			给元素添加class="active"属性，相当于设置元素具有opacity样式，值是1
+		*/
+		#lun>ul>.active{
+			opacity:1;
+		}
+
+		#listnum{
+			width:180px;
+			height:20px;
+			background:rgba(255,255,255,0.3);
+			position:absolute;
+			bottom:20px;
+			left:50%;
+			margin-left:-90px;
+			border-radius:10px;
+		}
+
+		#listnum>ul>li{
+			width:12px;
+			height:12px;
+			background:#fff;
+			border-radius:6px;
+			float:left;
+			margin-top:4px;
+			margin-left:9.5px;
+		}
+		#listnum>ul>.activenum{
+			background:#DB192A;
+		}
+		
+		#left,#right{
+			width:30px;
+			height:60px;
+			position:absolute;
+			background:rgba(0,0,0,0.1);
+			display:none;
+			color:#fff;
+			font-size:20px;
+			text-align:center;
+			line-height:60px;
+			opacity:0.5;
+		}
+		#left{
+			top:50%;
+			margin-top:-30px;
+		}
+		#right{
+			top:50%;
+			right:0px;
+			margin-top:-30px;
+		}
+		#left:hover,#right:hover{
+			background:rgba(0,0,0,0.6);
+			opacity:1;
+		}
+	</style>
+</head>
+<body>
+	<div id="lun">
+		<ul id="imglist">
+			<li><img src="./imgs/1.jpg" alt=""></li>
+			<li><img src="./imgs/2.jpg" alt=""></li>
+			<li><img src="./imgs/3.jpg" alt=""></li>
+			<li><img src="./imgs/4.jpg" alt=""></li>
+			<li><img src="./imgs/5.jpg" alt=""></li>
+			<li><img src="./imgs/6.jpg" alt=""></li>
+			<li><img src="./imgs/7.jpg" alt=""></li>
+			<li><img src="./imgs/8.jpg" alt=""></li>
+		</ul>
+
+		<!--
+			能不能方便用户直接选择自己喜欢的哪一个！
+		-->
+		<div id="listnum">
+			<ul>
+				<li class="activenum"></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
+		
+		<!-- 定义左箭头和右箭头 -->
+		<div id="left"><</div>
+		<div id="right">></div>
+	</div>
+</body>
+	<script>
+		/*
+			轮播图：
+				图片的切换显示，将当前显示的图片隐藏，将下一个位置的图片显示！
+			约定：
+				所有li项默认都是隐藏的，只有添加了class="active" li项才会显示
+				导致：我们添加和移除class="active"，可以控制元素显示与隐藏
+		*/
+		
+		// 获取所有的li项
+		var lun = document.getElementById('lun');	// 轮播图的容器
+		// console.log(lun.children[0]);
+		var lis = lun.children[0].children;
+		// console.log(lis);
+		
+		// 获取所有的圆点li
+		var numList = document.getElementById('listnum').children[0].children;
+		// console.log(numList);
+		
+		// 获取左右箭头
+		var left = document.getElementById('left');
+		var right = document.getElementById('right');
+		
+		// 设置一个标志index，标志了显示的图片的索引！
+		var index = 0;		// 默认显示第一张
+		
+		// 设置第一张显示
+		lis[index].setAttribute('class','active');
+		
+		/*
+			设置属性  setAttribute('属性名','属性的值')
+			获取属性  getAttribute('属性名');
+			移除属性  removeAttribute('属性名');
+		*/
+		
+		// 声明run，是定时器是否运行的标志
+		// 如果run是有值的，那么就标志定时器是已经运行了
+		// 如果run是没有值的，说明定时器没有执行
+		var run;
+		
+		/**
+		*	定义轮播图运动的函数 autoRun()
+		*/
+		function autoRun(){
+			// 判断run是否存在
+			if(run){
+				// run存在，说明定时器已经执行了，不需要再次产生，下面的代码不需要再次执行！
+				return;
+			}
+		
+			// 每隔2秒的时间切换图片
+			run = setInterval(function(){
+				// 将当前的图片隐藏 -- 移除该元素的类名
+				lis[index].removeAttribute('class');
+				// 当前圆点背景颜色消失
+				numList[index].removeAttribute('class');
+				
+				// 让index+1切换到下一张
+				index++; // index+=1
+				
+				// 判断index的值,如果超过等于lis.length的长度，该重置为0，重新开始显示
+				if(index==lis.length){
+					index = 0;
+				}
+				
+				// 下一张显示
+				lis[index].setAttribute('class','active');
+				// 下一个圆点背景颜色显示
+				numList[index].setAttribute('class','activenum');
+			},2000);
+		}
+		
+		// 用户第一次进入页面，调用该函数
+		autoRun();
+		
+		// 当鼠标悬浮在圆点上时，图片切换到对应的图片，当前圆点背景颜色显示
+		// 不管之前是哪一张，要都隐藏掉，之前的圆点也要隐藏
+		for(var i=0;i<numList.length;i++){
+			// 设置圆点列表中每一个li的数字标志
+			numList[i].setAttribute('data-num',i);
+		
+			// onmouseover 鼠标悬浮时
+			numList[i].onmouseenter = function(){
+				// 停止定时器
+				clearInterval(run);
+				// 清除标志
+				run = undefined;
+				
+				// 之前的显示的图片、之前的圆点背景颜色
+				lis[index].removeAttribute('class');
+				numList[index].removeAttribute('class');
+				
+				// 当前圆点背景颜色
+				index = this.getAttribute('data-num');
+				// alert(index);
+				numList[index].setAttribute('class','activenum');
+				// 当前应该显示的图片
+				lis[index].setAttribute('class','active');
+			}
+			
+			// 鼠标离开圆点，定时器重新开始运行
+			numList[i].onmouseleave = function(){
+				// 调用轮播图运动的函数
+				autoRun();
+			}
+		}
+		
+		/*
+			onmouseover、onmouseout事件
+				如果在元素的内部和子元素发生鼠标切换时同样会触发！
+			onmouseenter、onmouseleave 不具有冒泡属性！
+			onmouseenter 鼠标进入
+			onmouseleave 鼠标离开
+		*/
+		
+		// 当鼠标进入lun容器时，定时器停止
+		lun.onmouseenter = function(){
+			// console.log('鼠标进入了....');
+			clearInterval(run);
+			// 清除标志
+			run = undefined;
+			
+			// 显示左右两个箭头
+			left.style.display = 'block';
+			right.style.display = 'block';
+		};
+		lun.onmouseleave = function(){
+			// console.log('鼠标离开了');
+			autoRun();
+			
+			// 左右箭头隐藏
+			// 显示左右两个箭头
+			left.style.display = 'none';
+			right.style.display = 'none';
+		};
+		
+		// 左右箭头的单击事件
+		left.onclick = function(){
+			// 之前的隐藏
+			lis[index].removeAttribute('class');
+			numList[index].removeAttribute('class');
+		
+			// index
+			index--;
+			
+			// 最小值的临界点
+			if(index<0){
+				// 索引值的最大值是长度-1
+				index = lis.length - 1;
+			}
+			
+			
+			// 上一个显示
+			lis[index].setAttribute('class','active');
+			numList[index].setAttribute('class','activenum');
+		}
+		right.onclick = function(){			
+			// 之前的隐藏
+			lis[index].removeAttribute('class');
+			numList[index].removeAttribute('class');
+		
+			// index 
+			index++;
+			
+			// 最大值的临界点
+			if(index==lis.length){
+				index = 0;
+			}
+			
+			// 上一个显示
+			lis[index].setAttribute('class','active');
+			numList[index].setAttribute('class','activenum');
+		}
+		
+	</script>
+</html>
